@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
        <head>
-        <link rel="icon" href="/favicondots.png" type="image/x-icon"/>
+     
       </head>
       
       <body
