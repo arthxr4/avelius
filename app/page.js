@@ -74,7 +74,7 @@ const total = subtotal - discount;
       <div className="max-w-6xl w-full">
         <div className="grid grid-cols-1 md:grid-cols-[55%_44%] bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
           {/* LEFT */}
-          <div className="bg-[#F6F6F6] p-6 md:p-8 z-0 flex flex-col gap-8">
+          <div className="bg-[#F6F6F6] p-6 md:p-8 z-0 flex flex-col gap-4 md:gap-8">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Choose your number of comments</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4">
               {PRESET_PACKS.map((pack) => {
@@ -174,9 +174,9 @@ const total = subtotal - discount;
                   <span>Price per comment</span>
                   <span className="font-semibold">${unitAmount.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Estimated ad range</span>
-                  <span className="font-semibold">{minAds} - {maxAds} ads</span>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold">Estimated ad range</span>
+                  <span className=" text-lg font-bold">{minAds} - {maxAds} ads</span>
                 </div>
               </div>
 
