@@ -61,7 +61,7 @@ const total = subtotal - discount;
   
     const data = await res.json();
     if (data?.url) {
-      window.location.href = data.url;
+      window.top.location.href = data.url;
     } else {
       alert("Something went wrong...");
     }
