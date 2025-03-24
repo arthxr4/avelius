@@ -76,7 +76,7 @@ const total = subtotal - discount;
           {/* LEFT */}
           <div className="bg-[#F6F6F6] p-6 md:p-8 z-0 flex flex-col gap-8">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Choose your number of comments</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4">
               {PRESET_PACKS.map((pack) => {
                 const isSelected = selectedPack.comments === pack.comments && !customCount;
                 const savings = Math.round(((pack.comments * 1.0 - pack.comments * pack.pricePerComment) / (pack.comments * 1.0)) * 100);
@@ -87,7 +87,7 @@ const total = subtotal - discount;
                       setSelectedPack(pack);
                       setCustomCount(null);
                     }}
-                    className={`group relative border rounded-xl h-24 w-full flex flex-col items-center justify-center text-center transition-all duration-200 ease-in-out px-3 z-0
+                    className={`group relative border rounded-xl h-20 sm:h-20 md:h-24 w-full flex flex-col items-center justify-center text-center transition-all duration-200 ease-in-out px-3 z-0
                       ${isSelected ? "bg-blue-50 border-blue-600 text-gray-800 ring-1 ring-blue-300" : "bg-white border-gray-200 text-gray-700 hover:bg-blue-50 hover:border-blue-400"}`}
                   >
                     {savings >= 10 && (
@@ -111,7 +111,7 @@ const total = subtotal - discount;
               })}
 
               {/* Custom input */}
-              <div className="group relative border rounded-xl h-24 w-full flex flex-col items-center justify-center text-center transition-all duration-200 ease-in-out px-3 z-0 bg-white border-gray-200 hover:border-blue-400">
+              <div className="group relative border rounded-xl h-20 sm:h-20 md:h-24 w-full flex flex-col items-center justify-center text-center transition-all duration-200 ease-in-out px-3 z-0 bg-white border-gray-200 hover:border-blue-400">
                 <div className="text-sm font-medium text-gray-500 mb-2">Custom</div>
                 <input
                   type="number"
