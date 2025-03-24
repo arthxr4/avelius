@@ -223,7 +223,7 @@ const total = subtotal - discount;
                 <span>${total.toFixed(2)}</span>
               </div>
               <p className="text-sm text-gray-500 mt-1 text-right">
-                +VAT / {subscribe ? "Billed monthly (auto-renewal)" : "One-time payment"}
+                {subscribe ? "Billed monthly (auto-renewal)" : "One-time payment"}
               </p>
 
               <Button
