@@ -111,8 +111,8 @@ const total = subtotal - discount;
               })}
 
               {/* Custom input block */}
-<div className="group relative border rounded-xl h-24 w-full flex flex-col items-center justify-center text-center transition-all duration-200 ease-in-out px-3 z-0 bg-white border-gray-200 hover:border-blue-400">
-  <div className="text-sm font-medium text-gray-500 mb-2">Custom</div>
+<div className="group relative border rounded-xl h-20 sm:h-20 md:h-24 w-full flex flex-col items-center justify-center text-center transition-all duration-200 ease-in-out px-3 z-0 bg-white border-gray-200 hover:border-blue-400">
+  <div className="text-sm font-medium text-gray-500 mb-0 md:mb-2">Custom</div>
   <input
     type="text"
     inputMode="numeric"
@@ -132,7 +132,7 @@ const total = subtotal - discount;
         setCustomCount(numeric); // pour que l’utilisateur voie ce qu’il tape, même si < 10
       }
     }}
-    className="w-32 text-center border border-gray-300 rounded-md px-2 py-1 text-sm"
+    className="w-full text-center border border-gray-300 rounded-md px-2 py-1 text-sm"
     placeholder="Enter"
   />
   <div className="text-xs text-gray-400 mt-1">min 10 comments</div>
