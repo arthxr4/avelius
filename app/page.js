@@ -110,21 +110,33 @@ const total = subtotal - discount;
                 );
               })}
 
-              {/* Custom input */}
-              <div className="group relative border rounded-xl h-20 sm:h-20 md:h-24 w-full flex flex-col items-center justify-center text-center transition-all duration-200 ease-in-out px-3 z-0 bg-white border-gray-200 hover:border-blue-400">
-                <div className="text-sm font-medium text-gray-500 mb-2">Custom</div>
-                <input
-                  type="number"
-                  min={20}
-                  max={5000}
-                  step={1}
-                  value={customCount || ""}
-                  onChange={(e) => handleCustomChange(Number(e.target.value))}
-                  className="w-24 text-center border border-gray-300 rounded-md px-2 py-1 text-sm"
-                  placeholder="Enter"
-                />
-                <div className="text-xs text-gray-400 mt-1">min 20 comments</div>
-              </div>
+              {/* Custom input block */}
+<div className="group relative border rounded-xl h-24 w-full flex flex-col items-center justify-center text-center transition-all duration-200 ease-in-out px-3 z-0 bg-white border-gray-200 hover:border-blue-400">
+  <div className="text-sm font-medium text-gray-500 mb-2">Custom</div>
+  <input
+    type="text"
+    inputMode="numeric"
+    pattern="[0-9]*"
+    min={10}
+    value={customCount || ""}
+    onChange={(e) => {
+      let value = e.target.value.replace(/[.,]/g, ""); // supprime virgule et point
+      value = value.replace(/\D/g, ""); // supprime tout ce qui n’est pas chiffre
+      const numeric = Number(value);
+    
+      if (numeric >= 10) {
+        setCustomCount(numeric);
+        const rate = getRateByVolume(numeric);
+        setSelectedPack({ comments: numeric, pricePerComment: rate });
+      } else {
+        setCustomCount(numeric); // pour que l’utilisateur voie ce qu’il tape, même si < 10
+      }
+    }}
+    className="w-32 text-center border border-gray-300 rounded-md px-2 py-1 text-sm"
+    placeholder="Enter"
+  />
+  <div className="text-xs text-gray-400 mt-1">min 10 comments</div>
+</div>
             </div>
             {/* Features */}
             <div className="bg-white rounded-xl border p-6 mt-2">
