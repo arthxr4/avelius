@@ -75,7 +75,7 @@ const total = subtotal - discount;
         <div className="grid grid-cols-1 md:grid-cols-[55%_44%] bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
           {/* LEFT */}
           <div className="bg-[#F6F6F6] p-6 md:p-8 z-0 flex flex-col gap-8">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Choose your total number of comments</h3>
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Choose your number of comments</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {PRESET_PACKS.map((pack) => {
                 const isSelected = selectedPack.comments === pack.comments && !customCount;
