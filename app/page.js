@@ -24,7 +24,7 @@ export default function GetSocialTrust() {
 
   const [selectedPack, setSelectedPack] = useState(PRESET_PACKS[0]);
   const [customCount, setCustomCount] = useState(null);
-  const [subscribe, setSubscribe] = useState(false);
+  const [subscribe, setSubscribe] = useState(true);
 
   const handleCustomChange = (count) => {
     setCustomCount(count);
@@ -95,7 +95,7 @@ const total = subtotal - discount;
                         SAVE {savings}%
                       </div>
                     )}
-                    <div className="text-lg font-semibold transition-all group-hover:text-base group-hover:-translate-y-1">
+                    <div className="text-sm group-hover:text-sm sm:text-base sm:group-hover:text-sm lg:text-lg lg:group-hover:text-base font-semibold transition-all group-hover:-translate-y-1">
                       {pack.comments.toLocaleString("en-US")} comments
                     </div>
                     <div className="overflow-hidden transition-all duration-200 ease-in-out group-hover:max-h-20 max-h-0 flex flex-col items-center mt-0 opacity-0 group-hover:opacity-100">
