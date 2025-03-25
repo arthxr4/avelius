@@ -80,7 +80,9 @@ const handleCheckout = async () => {
 
   const data = await res.json();
   if (data?.url) {
-    window.location.href = data.url;
+   
+    window.open(data.url, "_blank");
+    setLoading(false);
   } else {
     alert("Something went wrong...");
     setLoading(false); // 👉 reset loading si erreur
