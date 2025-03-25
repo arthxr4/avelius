@@ -7,8 +7,7 @@ export async function POST(req) {
   try {
     const { comments, unitAmount, isSubscription } = await req.json();
 
-    // ⚠️ Stripe exige un entier en CENTIMES
-    const unitAmountInCents = Math.round(unitAmount); // tu l'envoies déjà depuis page.js multiplié par 100
+    const unitAmountInCents = Math.round(unitAmount); // déjà multiplié par 100 dans page.js
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -18,26 +17,34 @@ export async function POST(req) {
           price_data: {
             currency: "usd",
             product: process.env.STRIPE_PRODUCT_ID,
-            unit_amount: unitAmountInCents, // ✅ bien un INT en centimes
+            unit_amount: unitAmountInCents,
             ...(isSubscription && {
               recurring: {
                 interval: "month",
               },
             }),
           },
-          quantity: comments, // ✅ nombre de commentaires achetés
+          quantity: comments,
         },
       ],
+      // ✅ Supprime cette ligne
+      // customer_email: null,
+    
+      // ✅ Stripe créera automatiquement un Customer s’il n’existe pas
+      customer_creation: "always",
+    
       discounts: isSubscription
         ? [
             {
-              coupon: process.env.STRIPE_COUPON_10_PERCENT, // 👈 si tu passes par un coupon
+              coupon: process.env.STRIPE_COUPON_10_PERCENT,
             },
           ]
         : [],
+    
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cancel`,
     });
+    
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
