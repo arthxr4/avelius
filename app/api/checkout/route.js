@@ -41,7 +41,7 @@ export async function POST(req) {
           }),
 
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
-      cancel_url: "https://divine-marketing-226902.framer.app/",
+      cancel_url: "https://divine-marketing-226902.framer.app/#pricing",
     });
 
     return NextResponse.json({ url: session.url });

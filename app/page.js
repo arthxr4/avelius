@@ -60,28 +60,32 @@ const total = subtotal - discount;
 
 
   // ...
-  const handleCheckout = async () => {
-    const unitAmountInCents = Math.round(unitAmount * 100); // 💰 conversion en centimes arrondie
-  
-    const res = await fetch("/api/checkout", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        comments: selectedPack.comments,
-        unitAmount: unitAmountInCents, // CENTIMES pour Stripe
-        isSubscription: subscribe,
-      }),
-    });
-  
-    const data = await res.json();
-    if (data?.url) {
-      window.top.location.href = data.url;
-    } else {
-      alert("Something went wrong...");
-    }
-  };
+  const [loading, setLoading] = useState(false);
+
+const handleCheckout = async () => {
+  setLoading(true); // 👉 active le loading
+  const res = await fetch("/api/checkout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      comments: selectedPack.comments,
+      unitAmount: Math.round(
+        (subscribe ? unitAmount * 0.9 : unitAmount) * 100
+      ),
+      isSubscription: subscribe,
+    }),
+  });
+
+  const data = await res.json();
+  if (data?.url) {
+    window.location.href = data.url;
+  } else {
+    alert("Something went wrong...");
+    setLoading(false); // 👉 reset loading si erreur
+  }
+};
   
 
 
@@ -267,11 +271,12 @@ const total = subtotal - discount;
               </p>
 
               <Button
-                onClick={handleCheckout}
-                className="w-full mt-6 bg-[#1E40AF] hover:bg-[#1D4ED8] font-medium text-white py-5 text-base"
-              >
-                Confirm & Pay
-              </Button>
+  onClick={handleCheckout}
+  disabled={loading}
+  className="w-full mt-6 bg-[#1E40AF] hover:bg-[#1D4ED8] font-medium text-white py-5 text-base"
+>
+  {loading ? "Redirecting..." : "Confirm & Pay"}
+</Button>
             </div>
 
              {/* Payment logos */}
