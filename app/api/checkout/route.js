@@ -27,24 +27,21 @@ export async function POST(req) {
           quantity: comments,
         },
       ],
-      // ✅ Supprime cette ligne
-      // customer_email: null,
-    
-      // ✅ Stripe créera automatiquement un Customer s’il n’existe pas
-      customer_creation: "always",
-    
-      discounts: isSubscription
-        ? [
-            {
-              coupon: process.env.STRIPE_COUPON_10_PERCENT,
-            },
-          ]
-        : [],
-    
+      ...(isSubscription
+        ? {
+            discounts: [
+              {
+                coupon: process.env.STRIPE_COUPON_10_PERCENT,
+              },
+            ],
+          }
+        : {
+            customer_creation: "always",
+          }),
+
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cancel`,
     });
-    
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
