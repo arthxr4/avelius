@@ -62,32 +62,31 @@ const total = subtotal - discount;
   // ...
   const [loading, setLoading] = useState(false);
 
-const handleCheckout = async () => {
-  setLoading(true); // 👉 active le loading
-  const res = await fetch("/api/checkout", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      comments: selectedPack.comments,
-      unitAmount: Math.round(
-        (subscribe ? unitAmount * 0.9 : unitAmount) * 100
-      ),
-      isSubscription: subscribe,
-    }),
-  });
-
-  const data = await res.json();
-  if (data?.url) {
-   
-    window.open(data.url, "_blank");
-    setLoading(false);
-  } else {
-    alert("Something went wrong...");
-    setLoading(false); // 👉 reset loading si erreur
-  }
-};
+  const handleCheckout = async () => {
+    setLoading(true); // 👉 active le loading
+  
+    const res = await fetch("/api/checkout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        comments: selectedPack.comments,
+        unitAmount: Math.round(unitAmount * 100), // 👉 PAS de réduction ici
+        isSubscription: subscribe,
+      }),
+    });
+  
+    const data = await res.json();
+    if (data?.url) {
+      window.open(data.url, "_blank"); // ✅ ouvre Stripe dans un nouvel onglet
+      setLoading(false);
+    } else {
+      alert("Something went wrong...");
+      setLoading(false); // 👉 reset loading si erreur
+    }
+  };
+  
   
 
 
