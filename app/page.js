@@ -14,20 +14,28 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function GetSocialTrust() {
   const PRESET_PACKS = [
-    { comments: 100, pricePerComment: 0.95 },
-    { comments: 250, pricePerComment: 0.85 },
-    { comments: 500, pricePerComment: 0.75 },
-    { comments: 750, pricePerComment: 0.70 },
-    { comments: 1000, pricePerComment: 0.65 },
+    { comments: 20, pricePerComment: 1.25 },
+    { comments: 50, pricePerComment: 1.0 },
+    { comments: 100, pricePerComment: 0.9 },
+    { comments: 200, pricePerComment: 0.8 },
+    { comments: 400, pricePerComment: 0.7 },
   ];
+  
 
   const getRateByVolume = (count) => {
-    if (count >= 1000) return 0.65;
-    if (count >= 750) return 0.70;
-    if (count >= 500) return 0.75;
-    if (count >= 250) return 0.85;
-    if (count >= 100) return 0.95;
-    return 1.0;
+    if (count >= 400) return 0.7;
+    if (count >= 200) return 0.8;
+    if (count >= 100) return 0.9;
+    if (count >= 50) return 1.0;
+    if (count >= 20) return 1.25;
+    return 1.25; // prix max si en-dessous de 20
+  };
+
+  const getBasePricePerComment = () => {
+    const minPack = PRESET_PACKS.reduce((prev, curr) =>
+      curr.comments < prev.comments ? curr : prev
+    );
+    return minPack.pricePerComment;
   };
 
   const [selectedPack, setSelectedPack] = useState(PRESET_PACKS[0]);
@@ -92,7 +100,8 @@ const total = subtotal - discount;
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4">
               {PRESET_PACKS.map((pack) => {
                 const isSelected = selectedPack.comments === pack.comments && !customCount;
-                const savings = Math.round(((pack.comments * 1.0 - pack.comments * pack.pricePerComment) / (pack.comments * 1.0)) * 100);
+                const basePrice = getBasePricePerComment();
+                const savings = Math.round(((basePrice - pack.pricePerComment) / basePrice) * 100);
                 return (
                   <button
                     key={pack.comments}
@@ -211,7 +220,7 @@ const total = subtotal - discount;
               <hr className="my-6 border-t border-gray-200" />
               <div className="flex justify-between text-sm text-gray-800 mb-2">
                 <span className="font-semibold">Sub-total</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span className="font-semibold">${subtotal.toFixed(2)}</span>
               </div>
 
               {/* Subscription Option */}
