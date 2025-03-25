@@ -3,6 +3,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Check, Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 
 export default function GetSocialTrust() {
   const PRESET_PACKS = [
@@ -75,7 +83,12 @@ const total = subtotal - discount;
         <div className="grid grid-cols-1 md:grid-cols-[55%_44%] bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
           {/* LEFT */}
           <div className="bg-[#F6F6F6] p-6 md:p-8 z-0 flex flex-col gap-4 md:gap-8">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Choose your number of comments</h3>
+            <div>
+            <h3 className="text-lg font-semibold text-gray-800">Select your total comment credits</h3>
+            <p className="text-sm text-gray-500 mt-1">
+            This is the total number of comments you’ll be able to allocate across your ads.
+</p>
+</div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-4">
               {PRESET_PACKS.map((pack) => {
                 const isSelected = selectedPack.comments === pack.comments && !customCount;
@@ -174,18 +187,26 @@ const total = subtotal - discount;
                   <span>Price per comment</span>
                   <span className="font-semibold">${unitAmount.toFixed(2)}</span>
                 </div>
+                {/*
                 <div className="flex justify-between items-center">
                   <span className="font-bold">Estimated ad range</span>
                   <span className=" text-lg font-bold">{minAds} - {maxAds} ads</span>
                 </div>
+                */}
               </div>
 
+         
+
+
+
               <div className="flex items-center gap-3 rounded-md bg-blue-50 text-blue-900 text-xs px-3 py-2 mt-4 border border-blue-100">
-                <Info className="w-4 h-4 text-blue-500" />
-                <p className="text-sm leading-snug">
-                  To ensure quality and account protection, we limit to <strong>20 comments max per ad</strong>.
-                </p>
-              </div>
+  <Info className="w-12 h-12 text-blue-500" />
+  <p className="text-sm leading-snug">
+  We recommend posting <strong>15 to 20 comments per ad</strong> for best results.
+  After checkout, you'll be able to split your comments across multiple ads by sending us their URLs.
+</p>
+</div>
+              
 
               <hr className="my-6 border-t border-gray-200" />
               <div className="flex justify-between text-sm text-gray-800 mb-2">
