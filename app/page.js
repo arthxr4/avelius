@@ -143,13 +143,19 @@ const total = subtotal - discount;
     inputMode="numeric"
     pattern="[0-9]*"
     min={10}
+    max={5000}
     value={customCount || ""}
     onChange={(e) => {
       let value = e.target.value.replace(/[.,]/g, "");
       value = value.replace(/\D/g, "");
-      const numeric = Number(value);
+      
+     
+      if (value.length > 0 && Number(value) > 5000) return;
 
-      if (numeric >= 10) {
+    const numeric = Number(value);
+    setCustomCount(numeric);
+
+      if (numeric >= 10 && numeric <= 5000) {
         setCustomCount(numeric);
         const rate = getRateByVolume(numeric);
         setSelectedPack({ comments: numeric, pricePerComment: rate });
@@ -160,7 +166,7 @@ const total = subtotal - discount;
     className="w-full text-center border border-gray-300 rounded-md px-2 py-1 text-sm"
     placeholder="Enter"
   />
-  <div className="text-xs text-gray-400 mt-1">min 10 comments</div>
+  <div className="text-xs text-gray-400 mt-1">10-5000 comments</div>
 </div>
 
             </div>
@@ -191,14 +197,14 @@ const total = subtotal - discount;
           <div className="p-8 bg-white border-l border-gray-200 flex flex-col justify-between">
             <div className="mb-6">
               <h3 className="text-xl font-semibold mb-5">Summary</h3>
-              <div className="space-y-2 text-sm text-gray-800">
+              <div className="space-y-2 text-sm text-black">
                 <div className="flex justify-between">
-                  <span>Total comments</span>
-                  <span className="font-semibold">{selectedPack.comments}</span>
+                  <span className="font-bold text-base">Total comments</span>
+                  <span className="font-bold text-base">{selectedPack.comments}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Price per comment</span>
-                  <span className="font-semibold">${unitAmount.toFixed(2)}</span>
+                  <span className="font-regular">Price per comment</span>
+                  <span className="font-bold">${unitAmount.toFixed(2)}</span>
                 </div>
                 {/*
                 <div className="flex justify-between items-center">
@@ -214,7 +220,7 @@ const total = subtotal - discount;
 
               <div className="flex items-center gap-3 rounded-md bg-blue-50 text-blue-900 text-xs px-3 py-2 mt-4 border border-blue-100">
   <Info className="w-12 h-12 text-blue-500" />
-  <p className="text-sm leading-snug">
+  <p className="text-xs leading-snug">
   We recommend posting <strong>15 to 20 comments per ad</strong> for best results.
   After checkout, you'll be able to split your comments across multiple ads by sending us their URLs.
 </p>
@@ -222,9 +228,9 @@ const total = subtotal - discount;
               
 
               <hr className="my-6 border-t border-gray-200" />
-              <div className="flex justify-between text-sm text-gray-800 mb-2">
-                <span className="font-semibold">Sub-total</span>
-                <span className="font-semibold">${subtotal.toFixed(2)}</span>
+              <div className="flex justify-between  text-sm text-black mb-2">
+                <span className="font-regular">Sub-total</span>
+                <span className="font-bold">${subtotal.toFixed(2)}</span>
               </div>
 
               {/* Subscription Option */}
@@ -252,9 +258,9 @@ const total = subtotal - discount;
               </div>
 
               {/* Final total */}
-              <div className="flex justify-between items-center text-2xl font-bold text-black mt-6">
-                <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+              <div className="flex justify-between items-center  text-black mt-6">
+                <span className="text-base font-regular">Total</span>
+                <span className="font-bold text-2xl ">${total.toFixed(2)}</span>
               </div>
               <p className="text-sm text-gray-500 mt-1 text-right">
                 {subscribe ? "Billed monthly (auto-renewal)" : "One-time payment"}
