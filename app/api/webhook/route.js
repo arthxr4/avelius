@@ -1,9 +1,12 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Init Stripe avec ta clé secrète
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2023-10-16",
+});
 
-// Désactive le body parser par défaut
+// Désactivation du body parser
 export const config = {
   api: {
     bodyParser: false,
@@ -27,8 +30,11 @@ export async function POST(req) {
     return NextResponse.json({ error: "Invalid webhook signature" }, { status: 400 });
   }
 
+  // 👇 Gère l'événement Stripe : checkout.session.completed
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
+
+    const customerId = session.customer;
 
     console.log("✅ Paiement réussi !");
     console.log("👤 Client :", session.customer_email || "Non renseigné");
@@ -38,9 +44,33 @@ export async function POST(req) {
       ? Math.round((session.amount_total / session.amount_subtotal) * 100) + "%"
       : "Inconnue"
     );
-    console.log("🕐 Mode :", session.mode); // "payment" ou "subscription"
+    console.log("🕐 Mode :", session.mode);
 
-    // Tu peux aussi utiliser session.metadata.comments ici si tu veux le rajouter plus tard
+    // 👉 Création de facture uniquement si c'est un paiement one-time
+    if (session.mode === "payment") {
+      try {
+        // Étape 1 : créer un invoice item (ligne de produit à facturer)
+        await stripe.invoiceItems.create({
+          customer: customerId,
+          amount: session.amount_total, // en centimes
+          currency: session.currency,
+          description: `One-time purchase of ${session.amount_total / 100} USD`,
+        });
+
+        // Étape 2 : créer une facture associée à ce customer
+        const invoice = await stripe.invoices.create({
+          customer: customerId,
+          collection_method: "charge_automatically",
+        });
+
+        // Étape 3 : finaliser la facture pour déclencher l'envoi
+        await stripe.invoices.finalizeInvoice(invoice.id);
+
+        console.log("📄 Facture générée pour le paiement one-time !");
+      } catch (err) {
+        console.error("❌ Erreur création facture :", err.message);
+      }
+    }
   }
 
   return NextResponse.json({ received: true });
