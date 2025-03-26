@@ -1,9 +1,9 @@
-import { buffer } from "micro";
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+// Désactive le body parser par défaut
 export const config = {
   api: {
     bodyParser: false,
@@ -11,40 +11,37 @@ export const config = {
 };
 
 export async function POST(req) {
+  const rawBody = await req.text();
   const sig = req.headers.get("stripe-signature");
 
   let event;
-  const buf = await req.arrayBuffer();
-  const body = Buffer.from(buf).toString();
 
   try {
-    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    event = stripe.webhooks.constructEvent(
+      rawBody,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
   } catch (err) {
-    console.error("❌ Webhook signature verification failed.", err.message);
-    return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
+    console.error("❌ Erreur de vérification Webhook :", err.message);
+    return NextResponse.json({ error: "Invalid webhook signature" }, { status: 400 });
   }
 
-  // ✅ Quand un paiement est complété
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
 
-    if (session.mode === "payment") {
-      console.log("💵 One-time payment completed → Creating invoice");
+    console.log("✅ Paiement réussi !");
+    console.log("👤 Client :", session.customer_email || "Non renseigné");
+    console.log("💰 Montant total payé :", (session.amount_total / 100).toFixed(2), session.currency.toUpperCase());
+    console.log("🧾 ID de session :", session.id);
+    console.log("📦 Quantité :", session.amount_subtotal && session.amount_total
+      ? Math.round((session.amount_total / session.amount_subtotal) * 100) + "%"
+      : "Inconnue"
+    );
+    console.log("🕐 Mode :", session.mode); // "payment" ou "subscription"
 
-      try {
-        await stripe.invoices.create({
-          customer: session.customer,
-          description: "One-time comment pack purchase",
-          collection_method: "send_invoice",
-          auto_advance: true,
-        });
-
-        console.log("✅ Invoice created");
-      } catch (err) {
-        console.error("❌ Failed to create invoice", err);
-      }
-    }
+    // Tu peux aussi utiliser session.metadata.comments ici si tu veux le rajouter plus tard
   }
 
-  return new NextResponse(JSON.stringify({ received: true }), { status: 200 });
+  return NextResponse.json({ received: true });
 }
