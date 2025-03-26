@@ -7,12 +7,13 @@ export async function POST(req) {
   try {
     const { comments, unitAmount, isSubscription } = await req.json();
 
-    const unitAmountInCents = Math.round(unitAmount); // déjà multiplié par 100 dans page.js
+    const unitAmountInCents = Math.round(unitAmount); // Déjà multiplié par 100 côté front
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: isSubscription ? "subscription" : "payment",
       billing_address_collection: "required",
+      invoice_creation: !isSubscription ? { enabled: true } : undefined, // 👈 active la facture auto si one-time
       line_items: [
         {
           price_data: {
@@ -26,6 +27,7 @@ export async function POST(req) {
             }),
           },
           quantity: comments,
+         
         },
       ],
       ...(isSubscription
@@ -37,9 +39,8 @@ export async function POST(req) {
             ],
           }
         : {
-            customer_creation: "always",
+            customer_creation: "always", // 👈 crée un vrai customer, pas juste "invité"
           }),
-
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
       cancel_url: "https://divine-marketing-226902.framer.app/#pricing",
     });
