@@ -115,7 +115,7 @@ const total = subtotal - discount;
                       setCustomCount(null);
                     }}
                     className={`group relative border rounded-xl h-20 sm:h-20 md:h-24 w-full flex flex-col items-center justify-center text-center transition-all duration-200 ease-in-out px-3 z-0
-                      ${isSelected ? "bg-blue-50 border-blue-600 text-gray-800 ring-1 ring-blue-300" : "bg-white border-gray-200 text-gray-700 hover:bg-blue-50 hover:border-blue-400"}`}
+                      ${isSelected ? "bg-gray-50 border-gray-600 text-gray-800 ring-1 ring-gray-300" : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-400"}`}
                   >
                     {savings >= 10 && (
                       <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-10 bg-green-100 text-green-800 text-[10px] font-medium px-2 py-0.5 rounded-full">
@@ -140,7 +140,7 @@ const total = subtotal - discount;
    {/* Custom input block */}
 <div
   className={`group relative border rounded-xl h-20 sm:h-20 md:h-24 w-full flex flex-col items-center justify-center text-center transition-all duration-200 ease-in-out px-3 z-0
-    ${customCount ? "bg-blue-50 border-blue-600 text-gray-800 ring-1 ring-blue-300" : "bg-white border-gray-200 text-gray-700 hover:bg-blue-50 hover:border-blue-400"}`}
+    ${customCount ? "bg-[#fff5f0] border-gray-600 text-gray-800 ring-1 ring-gray-300" : "bg-white border-gray-200 text-gray-700 hover:bg-[#fff5f0] hover:border-gray-400"}`}
 >
   <div className="text-sm font-medium text-gray-500 mb-0 md:mb-2">Custom</div>
   <input
@@ -179,12 +179,12 @@ const total = subtotal - discount;
             <div className="bg-white rounded-xl border p-6 mt-2">
               <h4 className="text-base font-semibold text-gray-900 mb-4">Features</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-8 text-sm text-gray-800">
-                <div className="flex items-start gap-2"><Check className="text-blue-500 mt-1 w-4 h-4" /> Human-written comments</div>
-                <div className="flex items-start gap-2"><Check className="text-blue-500 mt-1 w-4 h-4" /> Strategic replies</div>
-                <div className="flex items-start gap-2"><Check className="text-blue-500 mt-1 w-4 h-4" /> Increased social proof</div>
-                <div className="flex items-start gap-2"><Check className="text-blue-500 mt-1 w-4 h-4" /> Real profiles only</div>
-                <div className="flex items-start gap-2"><Check className="text-blue-500 mt-1 w-4 h-4" /> Persona-matched engagement</div>
-                <div className="flex items-start gap-2"><Check className="text-blue-500 mt-1 w-4 h-4" /> Fast & reliable delivery</div>
+                <div className="flex items-start gap-2"><Check className="text-[#fe490c] mt-1 w-4 h-4" /> Human-written comments</div>
+                <div className="flex items-start gap-2"><Check className="text-[#fe490c] mt-1 w-4 h-4" /> Strategic replies</div>
+                <div className="flex items-start gap-2"><Check className="text-[#fe490c] mt-1 w-4 h-4" /> Increased social proof</div>
+                <div className="flex items-start gap-2"><Check className="text-[#fe490c] mt-1 w-4 h-4" /> Real profiles only</div>
+                <div className="flex items-start gap-2"><Check className="text-[#fe490c] mt-1 w-4 h-4" /> Persona-matched engagement</div>
+                <div className="flex items-start gap-2"><Check className="text-[#fe490c] mt-1 w-4 h-4" /> Fast & reliable delivery</div>
               </div>
               <div className="flex items-center gap-3 flex-wrap text-sm text-gray-600 mt-6">
                 <span className="font-medium text-gray-800 mr-2">Supported languages:</span>
@@ -219,18 +219,13 @@ const total = subtotal - discount;
                 */}
               </div>
 
-         
-
-
-
-              <div className="flex items-center gap-3 rounded-md bg-blue-50 text-blue-900 text-xs px-3 py-2 mt-4 border border-blue-100">
-  <Info className="w-12 h-12 text-blue-500" />
-  <p className="text-xs leading-snug">
-  We recommend posting <strong>15 to 20 comments per ad</strong> for best results.
-  After checkout, you'll be able to split your comments across multiple ads by sending us their URLs.
-</p>
-</div>
-              
+              <div className="flex items-start gap-3 rounded-md border border-muted bg-muted/50 text-muted-foreground text-xs px-4 py-3 mt-4">
+                <Info className="w-5 h-5 text-primary mt-1" />
+                <p className="leading-snug">
+                  We recommend posting <strong className="text-foreground">15 to 20 comments per ad</strong> for best results. <br />
+                  After checkout, you'll be able to split your comments across multiple ads by sending us their URLs.
+                </p>
+              </div>
 
               <hr className="my-6 border-t border-gray-200" />
               <div className="flex justify-between  text-sm text-black mb-2">
@@ -238,29 +233,31 @@ const total = subtotal - discount;
                 <span className="font-bold">${subtotal.toFixed(2)}</span>
               </div>
 
-              {/* Subscription Option */}
-              <div className="mt-6 border border-dashed border-blue-300 bg-blue-50 text-blue-900 rounded-md p-4 text-sm">
-                <div className="flex justify-between items-center mb-1">
-                  <label htmlFor="subscribe" className="font-semibold cursor-pointer">
-                    <input
-                      id="subscribe"
-                      type="checkbox"
-                      className="mr-2 cursor-pointer"
-                      checked={subscribe}
-                      onChange={() => setSubscribe(!subscribe)}
-                    />
-                    Subscribe & save 10%
-                  </label>
-                  {subscribe && (
-                    <span className="font-semibold text-green-600">
-                      -${discount.toFixed(2)}
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs leading-snug">
-                  Choose the subscription option at checkout to receive a <strong>10% discount</strong> on every monthly renewal. You can cancel anytime.
-                </p>
-              </div>
+             
+
+             {/* Subscription Option */}
+<div className="mt-6 border border-dashed rounded-md p-4 text-sm bg-muted text-muted-foreground">
+  <div className="flex justify-between items-center mb-1">
+    <label htmlFor="subscribe" className="font-medium cursor-pointer text-foreground">
+      <input
+        id="subscribe"
+        type="checkbox"
+        className="mr-2 cursor-pointer"
+        checked={subscribe}
+        onChange={() => setSubscribe(!subscribe)}
+      />
+      Subscribe & save 10%
+    </label>
+    {subscribe && (
+      <span className="font-semibold text-green-600">
+        -${discount.toFixed(2)}
+      </span>
+    )}
+  </div>
+  <p className="text-xs leading-snug">
+    Choose the subscription option at checkout to receive a <strong>10% discount</strong> on every monthly renewal. You can cancel anytime.
+  </p>
+</div>
 
               {/* Final total */}
               <div className="flex justify-between items-center  text-black mt-6">
@@ -274,7 +271,7 @@ const total = subtotal - discount;
               <Button
   onClick={handleCheckout}
   disabled={loading}
-  className="w-full mt-6 bg-[#1E40AF] hover:bg-[#1D4ED8] font-medium text-white py-5 text-base"
+  className="w-full mt-6 bg-[#fe490c] hover:bg-[#e03f00] font-medium text-white py-5 text-base"
 >
   {loading ? "Redirecting..." : "Confirm & Pay"}
 </Button>
@@ -283,15 +280,16 @@ const total = subtotal - discount;
              {/* Payment logos */}
              <div className="mt-0 pt-6 text-center text-gray-400 text-xs border-t">
               <p className="mb-3">Accepted payment methods:</p>
-              <div className="flex flex-wrap justify-center items-center gap-4 grayscale opacity-90">
-                <img src="/payments/visa.svg" alt="Visa" className="h-5" />
-                <img src="/payments/mastercard.svg" alt="Mastercard" className="h-5" />
-                <img src="/payments/amex.svg" alt="Amex" className="h-5" />
-                <img src="/payments/applepay.svg" alt="Apple Pay" className="h-5" />
-                <img src="/payments/googlepay.svg" alt="Google Pay" className="h-5" />
+              <div className="flex flex-wrap justify-center items-center gap-4 grayscale opacity-50">
+             
+                <img src="/payments/visa.svg" alt="Visa" className="h-8" />
+                <img src="/payments/mastercard.svg" alt="Mastercard" className="h-8" />
+                
+                <img src="/payments/applepay.svg" alt="Apple Pay" className="h-8" />
+                <img src="/payments/googlepay.svg" alt="Google Pay" className="h-8" />
               </div>
-              <p className="mt-4 flex items-center justify-center gap-1 text-[11px] text-gray-500">
-                <span>🔒</span> SSL Secure Payment — Powered by Stripe
+              <p className="mt-4 flex items-center justify-center gap-1 font-semibold text-[11px] text-gray-500">
+                 SSL Secure Payment — Powered by Stripe
               </p>
               <p className="text-[11px] text-gray-500">Your data is encrypted with 256-bit SSL.</p>
             </div>
