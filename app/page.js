@@ -140,7 +140,7 @@ const total = subtotal - discount;
    {/* Custom input block */}
 <div
   className={`group relative border rounded-xl h-20 sm:h-20 md:h-24 w-full flex flex-col items-center justify-center text-center transition-all duration-200 ease-in-out px-3 z-0
-    ${customCount ? "bg-[#fff5f0] border-gray-600 text-gray-800 ring-1 ring-gray-300" : "bg-white border-gray-200 text-gray-700 hover:bg-[#fff5f0] hover:border-gray-400"}`}
+    ${customCount ? "bg-gray-50 border-gray-600 text-gray-800 ring-1 ring-gray-300" : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-400"}`}
 >
   <div className="text-sm font-medium text-gray-500 mb-0 md:mb-2">Custom</div>
   <input
@@ -179,12 +179,12 @@ const total = subtotal - discount;
             <div className="bg-white rounded-xl border p-6 mt-2">
               <h4 className="text-base font-semibold text-gray-900 mb-4">Features</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-8 text-sm text-gray-800">
-                <div className="flex items-start gap-2"><Check className="text-[#fe490c] mt-1 w-4 h-4" /> Human-written comments</div>
-                <div className="flex items-start gap-2"><Check className="text-[#fe490c] mt-1 w-4 h-4" /> Strategic replies</div>
-                <div className="flex items-start gap-2"><Check className="text-[#fe490c] mt-1 w-4 h-4" /> Increased social proof</div>
-                <div className="flex items-start gap-2"><Check className="text-[#fe490c] mt-1 w-4 h-4" /> Real profiles only</div>
-                <div className="flex items-start gap-2"><Check className="text-[#fe490c] mt-1 w-4 h-4" /> Persona-matched engagement</div>
-                <div className="flex items-start gap-2"><Check className="text-[#fe490c] mt-1 w-4 h-4" /> Fast & reliable delivery</div>
+                <div className="flex items-start gap-2"><Check className="text-[#1870EC] mt-1 w-4 h-4" /> Human-written comments</div>
+                <div className="flex items-start gap-2"><Check className="text-[#1870EC] mt-1 w-4 h-4" /> Strategic replies</div>
+                <div className="flex items-start gap-2"><Check className="text-[#1870EC] mt-1 w-4 h-4" /> Increased social proof</div>
+                <div className="flex items-start gap-2"><Check className="text-[#1870EC] mt-1 w-4 h-4" /> Real profiles only</div>
+                <div className="flex items-start gap-2"><Check className="text-[#1870EC] mt-1 w-4 h-4" /> Persona-matched engagement</div>
+                <div className="flex items-start gap-2"><Check className="text-[#1870EC] mt-1 w-4 h-4" /> Fast & reliable delivery</div>
               </div>
               <div className="flex items-center gap-3 flex-wrap text-sm text-gray-600 mt-6">
                 <span className="font-medium text-gray-800 mr-2">Supported languages:</span>
@@ -271,7 +271,7 @@ const total = subtotal - discount;
               <Button
   onClick={handleCheckout}
   disabled={loading}
-  className="w-full mt-6 bg-[#fe490c] hover:bg-[#e03f00] font-medium text-white py-5 text-base"
+  className="w-full mt-6 bg-[#1870EC] hover:bg-[#0860DC] font-medium text-white py-5 text-base"
 >
   {loading ? "Redirecting..." : "Confirm & Pay"}
 </Button>
