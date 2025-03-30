@@ -187,13 +187,12 @@ const total = subtotal - discount;
                 <div className="flex items-start gap-2"><Check className="text-[#1870EC] mt-1 w-4 h-4" /> Fast & reliable delivery</div>
               </div>
               <div className="flex items-center gap-3 flex-wrap text-sm text-gray-600 mt-6">
-                <span className="font-medium text-gray-800 mr-2">Supported languages:</span>
-                <img src="https://flagcdn.com/w80/gb.png" alt="English" className="w-6 h-4 rounded-sm" />
-                <img src="https://flagcdn.com/w80/de.png" alt="German" className="w-6 h-4 rounded-sm" />
+                <span className="font-medium text-gray-800 mr-2">Countries available:</span>
+                <img src="https://flagcdn.com/w80/us.png" alt="English" className="w-6 h-4 rounded-sm" />
+                <img src="https://flagcdn.com/w80/gb.png" alt="USA" className="w-6 h-4 rounded-sm" />
+                <img src="https://flagcdn.com/w80/au.png" alt="Australia" className="w-6 h-4 rounded-sm" />
+                <img src="https://flagcdn.com/w80/ca.png" alt="Canada" className="w-6 h-4 rounded-sm" />
                 <img src="https://flagcdn.com/w80/fr.png" alt="French" className="w-6 h-4 rounded-sm" />
-                <img src="https://flagcdn.com/w80/es.png" alt="Spanish" className="w-6 h-4 rounded-sm" />
-                <img src="https://flagcdn.com/w80/pt.png" alt="Portuguese" className="w-6 h-4 rounded-sm" />
-                <img src="https://flagcdn.com/w80/it.png" alt="Italian" className="w-6 h-4 rounded-sm" />
               </div>
             </div>
           </div>
