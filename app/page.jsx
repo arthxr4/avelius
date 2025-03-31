@@ -1,15 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button.jsx";
 import { Check, Info } from "lucide-react";
-import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipProvider,
-} from "@/components/ui/tooltip";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 
 
 export default function GetSocialTrust() {
@@ -63,7 +57,10 @@ const total = subtotal - discount;
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
-    setLoading(true); // 👉 active le loading
+    setLoading(true);
+  
+    // 👉 ouvrir une fenêtre temporaire *immédiatement* pour ne pas être bloqué
+    const popup = window.open("", "_blank");
   
     const res = await fetch("/api/checkout", {
       method: "POST",
@@ -72,21 +69,22 @@ const total = subtotal - discount;
       },
       body: JSON.stringify({
         comments: selectedPack.comments,
-        unitAmount: Math.round(unitAmount * 100), // 👉 PAS de réduction ici
+        unitAmount: Math.round(unitAmount * 100),
         isSubscription: subscribe,
       }),
     });
   
     const data = await res.json();
-    if (data?.url) {
-      window.open(data.url, "_blank"); // ✅ ouvre Stripe dans un nouvel onglet
-      setLoading(false);
-    } else {
-      alert("Something went wrong...");
-      setLoading(false); // 👉 reset loading si erreur
-    }
-  };
   
+    if (data?.url) {
+      popup.location.href = data.url; // ✅ redirige la popup ouverte
+    } else {
+      popup.close(); // ❌ ferme si erreur
+      alert("Something went wrong...");
+    }
+  
+    setLoading(false);
+  };
   
 
 
