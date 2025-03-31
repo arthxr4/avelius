@@ -85,7 +85,7 @@ export default function DashboardClient() {
   }
 
   return (
-    <div className="min-h-screen p-8 max-w-3xl mx-auto">
+    <div className="min-h-screen p-8 max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold text-gray-800">
           Welcome, {user?.firstName || userEmail}
@@ -94,6 +94,25 @@ export default function DashboardClient() {
           <button className="text-sm text-gray-500 hover:underline">Log out</button>
         </SignOutButton>
       </div>
+      <button
+  onClick={async () => {
+    const res = await fetch("/api/stripe/portal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: userEmail }),
+    });
+
+    const data = await res.json();
+    if (data?.url) {
+      window.location.href = data.url;
+    } else {
+      alert("Stripe portal unavailable.");
+    }
+  }}
+  className="text-sm text-blue-600 hover:underline mt-4"
+>
+  Manage my purchases on Stripe
+</button>
 
       {/* Crédits restants */}
       <div className="mb-8 p-4 bg-gray-50 border rounded-lg shadow-sm">
