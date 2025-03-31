@@ -172,7 +172,14 @@ export default function DashboardClient() {
               .sort((a, b) => new Date(b.date) - new Date(a.date))
               .map((r) => (
                 <li key={r.id || `${r.url}-${r.date}`} className="p-4 border rounded-md bg-white shadow-sm">
-                  <p className="text-sm font-medium text-gray-700">📌 {r.url}</p>
+                  <a
+  href={r.url}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-sm font-medium text-blue-600 hover:text-blue-800"
+>
+  {r.url}
+</a>
                   <p className="text-sm text-gray-600">💬 {r.quantity || 0} comments</p>
                   <p className="text-sm text-gray-600">🗣️ Language: {r.language || '—'}</p>
                   <p className="text-sm text-gray-600">🆔 Order ID: {r.id}</p>
