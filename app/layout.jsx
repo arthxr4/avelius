@@ -1,17 +1,17 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
 
+import { ClerkProvider } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs";
 import "flowbite";
-import PrelineProvider from "./components/PrelineProvider"; // ✅ Import du composant client
+import PrelineProvider from "./components/PrelineProvider";
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter", // Variable CSS pour utiliser la police
-  display: "swap", // Permet un chargement plus fluide
+  variable: "--font-inter",
+  display: "swap",
 });
-
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,24 +24,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "GetSocialTrust | Pricing",
+  title: "GetSocialTrust",
   description: "",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-       <head>
-     
-      </head>
-      
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-        <PrelineProvider /> {/* ✅ Charge Preline côté client */}
-        <script src="./assets/vendor/nouislider/dist/nouislider.min.js"></script>
-      </body>
-    </html>
+    <ClerkProvider afterSignInUrl="/dashboard" afterSignUpUrl="/dashboard">
+      <html lang="en">
+        <head />
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          {children}
+          <PrelineProvider />
+          <script src="./assets/vendor/nouislider/dist/nouislider.min.js"></script>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

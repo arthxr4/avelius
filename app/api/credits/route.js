@@ -7,28 +7,77 @@ export async function POST(req) {
     return NextResponse.json({ error: "Missing email" }, { status: 400 });
   }
 
-  try {
-    const filterFormula = encodeURIComponent(`{email} = "${email}"`);
+  const apiKey = process.env.AIRTABLE_TOKEN;
+  const baseId = process.env.AIRTABLE_BASE_ID;
 
+  try {
+    // 👉 1. Cherche le client correspondant à l'email
     const res = await fetch(
-      `https://api.airtable.com/v0/${process.env.AIRTABLE_BASE_ID}/Clients?filterByFormula=${filterFormula}`,
+      `https://api.airtable.com/v0/${baseId}/Clients?filterByFormula={Contact Email}="${email}"`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.AIRTABLE_API_KEY}`,
+          Authorization: `Bearer ${apiKey}`,
         },
       }
     );
 
     const data = await res.json();
 
-    if (!data.records || data.records.length === 0) {
-      return NextResponse.json({ credits: 0 });
+    // 👉 Si aucun client trouvé, on en crée un automatiquement
+    if (!data.records.length) {
+      const createRes = await fetch(`https://api.airtable.com/v0/${baseId}/Clients`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fields: {
+            "Contact Email": email,
+            credits: 0,
+          },
+        }),
+      });
+
+      const newClient = await createRes.json();
+
+      return NextResponse.json({
+        credits: 0,
+        orders: [],
+        created: true, // facultatif, utile pour debug côté client
+      });
     }
 
-    const record = data.records[0];
-    const credits = record.fields.credits || 0;
+    // 👉 2. Sinon on récupère les données comme avant
+    const clientRecord = data.records[0];
+    const credits = clientRecord.fields.credits || 0;
+    const orderIds = clientRecord.fields.Orders || [];
 
-    return NextResponse.json({ credits });
+    const orders = [];
+
+    for (const orderId of orderIds) {
+      const orderRes = await fetch(
+        `https://api.airtable.com/v0/${baseId}/Orders/${orderId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+        }
+      );
+
+      const orderData = await orderRes.json();
+
+      orders.push({
+        id: orderData.id,
+        url: orderData.fields["Ads Link"] || null,
+        status: orderData.fields.Status || "In progress",
+        quantity: orderData.fields["Comments Per Ad"] || null,
+        language: orderData.fields["Language"] || "Unknown",
+        date: orderData.fields["Date"] || null,
+      });
+    }
+
+    return NextResponse.json({ credits, orders });
   } catch (error) {
     console.error("Airtable fetch error:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

@@ -1,63 +1,93 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { signOut, useSession } from "next-auth/react";
+import { useUser, SignOutButton } from '@clerk/nextjs';
+import { useEffect, useState } from 'react';
 
-export default function DashboardClient({ userEmail }) {
+export default function DashboardClient() {
+  const { user } = useUser();
+  const userEmail = user?.primaryEmailAddress?.emailAddress;
+
   const [credits, setCredits] = useState(null);
-  const [requests, setRequests] = useState([
-    {
-      id: 1,
-      url: 'https://facebook.com/ad-1',
-      comments: 20,
-      status: 'In progress',
-    },
-    {
-      id: 2,
-      url: 'https://facebook.com/ad-2',
-      comments: 50,
-      status: 'Delivered',
-    },
-    {
-      id: 3,
-      url: 'https://facebook.com/ad-3',
-      comments: 10,
-      status: 'In review',
-    },
-  ]);
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
+    if (!userEmail) return;
+
     const fetchCredits = async () => {
-      if (!userEmail) return;
-  
       const res = await fetch("/api/credits", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: userEmail }),
       });
-  
+
       const data = await res.json();
       setCredits(data.credits || 0);
+      setOrders(data.orders || []);
     };
-  
+
     fetchCredits();
   }, [userEmail]);
-  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const url = form.adUrl.value;
+    const quantity = Number(form.commentCount.value);
+
+    if (!url || !quantity || quantity <= 0) {
+      alert("Please enter a valid URL and number of comments.");
+      return;
+    }
+
+    if (quantity > 20) {
+      alert("❌ You can’t order more than 20 comments per ad.");
+      return;
+    }
+
+    if (quantity > credits) {
+      alert("❌ You don’t have enough credits for this request.");
+      return;
+    }
+
+    const res = await fetch("/api/orders/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: userEmail, adUrl: url, quantity }),
+    });
+
+    const data = await res.json();
+    if (!data.success) {
+      alert("An error occurred while submitting your request.");
+      return;
+    }
+
+    const newOrder = {
+      id: data.order.id,
+      url,
+      quantity,
+      status: "In progress",
+      date: new Date().toISOString(),
+    };
+
+    setOrders((prev) => [newOrder, ...prev]);
+    setCredits((prev) => prev - quantity);
+    form.reset();
+  };
+
+  if (!userEmail) {
+    return <div className="p-8 text-gray-600 text-sm">Loading user info...</div>;
+  }
 
   return (
     <div className="min-h-screen p-8 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-800 mb-2">
-      Welcome, {userEmail}
-      </h1>
-      
-      <button
-        onClick={() => signOut({ callbackUrl: "/" })}
-        className="ml-auto mb-6 text-sm text-gray-500 hover:underline"
-      >
-        Log out
-      </button>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold text-gray-800">
+          Welcome, {user?.firstName || userEmail}
+        </h1>
+        <SignOutButton>
+          <button className="text-sm text-gray-500 hover:underline">Log out</button>
+        </SignOutButton>
+      </div>
 
       {/* Crédits restants */}
       <div className="mb-8 p-4 bg-gray-50 border rounded-lg shadow-sm">
@@ -67,56 +97,11 @@ export default function DashboardClient({ userEmail }) {
         </p>
       </div>
 
-      {/* Demandes existantes */}
+      {/* Formulaire nouvelle commande */}
       <div className="mb-10">
-        <h2 className="text-lg font-semibold mb-4">Your comment requests</h2>
-        {requests.length === 0 ? (
-          <p className="text-gray-500 text-sm">You haven't submitted any requests yet.</p>
-        ) : (
-          <ul className="space-y-3">
-            {requests.map((r) => (
-              <li key={r.id} className="p-4 border rounded-md bg-white shadow-sm">
-                <p className="text-sm font-medium text-gray-700">📌 {r.url}</p>
-                <p className="text-sm text-gray-600">💬 {r.comments} comments</p>
-                <p className="text-sm">
-                  <span className="text-gray-500">Status: </span>
-                  <span className="font-medium text-blue-600">{r.status}</span>
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* Formulaire nouvelle demande */}
-      <div className="border-t pt-6 mt-8">
         <h2 className="text-lg font-semibold mb-4">Submit a new request</h2>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const form = e.target;
-            const url = form.adUrl.value;
-            const commentCount = Number(form.commentCount.value);
-
-            if (!url || !commentCount || commentCount <= 0) {
-              alert('Please enter a valid URL and number of comments.');
-              return;
-            }
-
-            const newRequest = {
-              id: requests.length + 1,
-              url,
-              comments: commentCount,
-              status: 'In progress',
-            };
-
-            setRequests([...requests, newRequest]);
-            setCredits((prev) => prev - commentCount);
-            form.reset();
-          }}
-          className="space-y-4"
-        >
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="adUrl" className="block text-sm font-medium text-gray-700">
               Ad URL
@@ -133,14 +118,14 @@ export default function DashboardClient({ userEmail }) {
 
           <div>
             <label htmlFor="commentCount" className="block text-sm font-medium text-gray-700">
-              Number of comments
+              Number of comments (max: 20)
             </label>
             <input
               type="number"
               name="commentCount"
               id="commentCount"
               min={1}
-              max={credits || 1}
+              max={20}
               required
               className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -153,6 +138,41 @@ export default function DashboardClient({ userEmail }) {
             Submit request
           </button>
         </form>
+      </div>
+
+      {/* Commandes Airtable */}
+      <div className="mb-10">
+        <h2 className="text-lg font-semibold mb-4">Your comment requests</h2>
+        {orders.length === 0 ? (
+          <p className="text-gray-500 text-sm">You haven't submitted any requests yet.</p>
+        ) : (
+          <ul className="space-y-3">
+            {[...orders]
+              .sort((a, b) => new Date(b.date) - new Date(a.date))
+              .map((r) => (
+                <li key={r.id} className="p-4 border rounded-md bg-white shadow-sm">
+                  <p className="text-sm font-medium text-gray-700">📌 {r.url}</p>
+                  <p className="text-sm text-gray-600">💬 {r.quantity || 0} comments</p>
+                  <p className="text-sm text-gray-600">🗣️ Language: {r.language || '—'}</p>
+                  <p className="text-sm text-gray-600">🆔 Order ID: {r.id}</p>
+                  <p className="text-sm text-gray-600">
+                    🗓️ Date (UTC):{" "}
+                    {r.date
+                      ? new Date(r.date).toLocaleString("en-GB", {
+                          timeZone: "UTC",
+                          dateStyle: "medium",
+                          timeStyle: "short",
+                        })
+                      : "—"}
+                  </p>
+                  <p className="text-sm">
+                    <span className="text-gray-500">Status: </span>
+                    <span className="font-medium text-blue-600">{r.status || "—"}</span>
+                  </p>
+                </li>
+              ))}
+          </ul>
+        )}
       </div>
     </div>
   );

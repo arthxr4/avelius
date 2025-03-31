@@ -1,16 +1,11 @@
-
-import { signOut } from "next-auth/react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { redirect } from "next/navigation";
+import { currentUser } from "@clerk/nextjs/server";
 import DashboardClient from "./DashboardClient";
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
+  const user = await currentUser();
+  const email = user?.emailAddresses?.[0]?.emailAddress;
 
-  if (!session) {
-    redirect("/login");
-  }
+  if (!email) return null;
 
-  return <DashboardClient userEmail={session.user.email} />;
+  return <DashboardClient userEmail={email} />;
 }
