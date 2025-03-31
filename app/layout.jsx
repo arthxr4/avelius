@@ -7,6 +7,9 @@ import { auth } from "@clerk/nextjs";
 import "flowbite";
 import PrelineProvider from "./components/PrelineProvider";
 
+
+import { Toaster } from "sonner";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -38,6 +41,7 @@ export default function RootLayout({ children }) {
         >
           {children}
           <PrelineProvider />
+          <Toaster richColors position="top-right" />
           <script src="./assets/vendor/nouislider/dist/nouislider.min.js"></script>
         </body>
       </html>

@@ -2,6 +2,7 @@
 
 import { useUser, SignOutButton } from '@clerk/nextjs';
 import { useEffect, useState } from 'react';
+import { toast } from "sonner";
 
 export default function DashboardClient() {
   const { user } = useUser();
@@ -74,6 +75,7 @@ export default function DashboardClient() {
 
     setOrders((prev) => [newOrder, ...prev]);
     setCredits((prev) => prev - quantity);
+    toast.success("Your comment request has been submitted!");
     form.reset();
   };
 
