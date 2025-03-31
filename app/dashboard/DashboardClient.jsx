@@ -1,11 +1,12 @@
 'use client';
-
+import { useRouter } from "next/navigation";
 import { useUser, SignOutButton } from '@clerk/nextjs';
 import { useEffect, useState } from 'react';
 import { toast } from "sonner";
 
 export default function DashboardClient() {
   const { user } = useUser();
+  const router = useRouter();
   const userEmail = user?.primaryEmailAddress?.emailAddress;
 
   const [credits, setCredits] = useState(null);
@@ -167,39 +168,44 @@ export default function DashboardClient() {
         {orders.length === 0 ? (
           <p className="text-gray-500 text-sm">You haven't submitted any requests yet.</p>
         ) : (
-          <ul className="space-y-3">
-            {[...orders]
-              .sort((a, b) => new Date(b.date) - new Date(a.date))
-              .map((r) => (
-                <li key={r.id || `${r.url}-${r.date}`} className="p-4 border rounded-md bg-white shadow-sm">
-                  <a
-  href={r.url}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="text-sm font-medium text-blue-600 hover:text-blue-800"
->
-  {r.url}
-</a>
-                  <p className="text-sm text-gray-600">💬 {r.quantity || 0} comments</p>
-                  <p className="text-sm text-gray-600">🗣️ Language: {r.language || '—'}</p>
-                  <p className="text-sm text-gray-600">🆔 Order ID: {r.id}</p>
-                  <p className="text-sm text-gray-600">
-                    🗓️ Date (UTC):{" "}
-                    {r.date
-                      ? new Date(r.date).toLocaleString("en-GB", {
+            <ul className="space-y-2">
+            {orders.map((order) => (
+              <li
+                key={order.id}
+                className="flex items-center justify-between px-4 py-3 bg-white rounded-md shadow-sm border hover:bg-gray-50 transition cursor-pointer"
+                onClick={() => router.push(`/orders/${order.id}`)}
+              >
+                <div className="flex-1 overflow-hidden">
+                  <p className="truncate text-sm font-medium text-gray-800">
+                    🔗 <a href={order.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{order.url}</a>
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    💬 {order.quantity} comments — 🌍 {order.language || "—"} — 🗓️{" "}
+                    {order.date
+                      ? new Date(order.date).toLocaleString("en-GB", {
                           timeZone: "UTC",
                           dateStyle: "medium",
                           timeStyle: "short",
                         })
                       : "—"}
                   </p>
-                  <p className="text-sm">
-                    <span className="text-gray-500">Status: </span>
-                    <span className="font-medium text-blue-600">{r.status || "—"}</span>
-                  </p>
-                </li>
-              ))}
+                </div>
+          
+                <span
+                  className={`text-xs font-semibold px-2 py-1 rounded-md ${
+                    order.status === "Done"
+                      ? "bg-green-100 text-green-800"
+                      : order.status === "In progress"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  {order.status}
+                </span>
+              </li>
+            ))}
           </ul>
+          
         )}
       </div>
     </div>

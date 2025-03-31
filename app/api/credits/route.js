@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+// 🧠 Cache global (valable tant que le serveur tourne)
+const cache = new Map();
+
 export async function POST(req) {
   const { email } = await req.json();
 
@@ -9,22 +12,29 @@ export async function POST(req) {
 
   const apiKey = process.env.AIRTABLE_TOKEN;
   const baseId = process.env.AIRTABLE_BASE_ID;
+  const cacheKey = `credits:${email}`;
+
+  // ✅ Check si en cache
+  if (cache.has(cacheKey)) {
+    return NextResponse.json(cache.get(cacheKey));
+  }
 
   try {
-    // 👉 1. Cherche le client correspondant à l'email
+    // 👉 1. Cherche le client
     const res = await fetch(
       `https://api.airtable.com/v0/${baseId}/Clients?filterByFormula={Contact Email}="${email}"`,
       {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
+        headers: { Authorization: `Bearer ${apiKey}` },
       }
     );
 
     const data = await res.json();
 
-    // 👉 Si aucun client trouvé, on en crée un automatiquement
+    let credits = 0;
+    let orders = [];
+
     if (!data.records.length) {
+      // ✨ Crée un nouveau client si inexistant
       const createRes = await fetch(`https://api.airtable.com/v0/${baseId}/Clients`, {
         method: "POST",
         headers: {
@@ -41,20 +51,19 @@ export async function POST(req) {
 
       const newClient = await createRes.json();
 
-      return NextResponse.json({
-        credits: 0,
-        orders: [],
-        created: true, // facultatif, utile pour debug côté client
-      });
+      const response = { credits: 0, orders: [], created: true };
+      cache.set(cacheKey, response);
+      setTimeout(() => cache.delete(cacheKey), 10000); // 💾 10 sec TTL
+
+      return NextResponse.json(response);
     }
 
-    // 👉 2. Sinon on récupère les données comme avant
+    // 👉 2. Données du client
     const clientRecord = data.records[0];
-    const credits = clientRecord.fields.credits || 0;
+    credits = clientRecord.fields.credits || 0;
     const orderIds = clientRecord.fields.Orders || [];
 
-    const orders = [];
-
+    // 👉 3. Récupère les commandes
     for (const orderId of orderIds) {
       const orderRes = await fetch(
         `https://api.airtable.com/v0/${baseId}/Orders/${orderId}`,
@@ -77,7 +86,13 @@ export async function POST(req) {
       });
     }
 
-    return NextResponse.json({ credits, orders });
+    const response = { credits, orders };
+
+    // ✅ Stock en cache pendant 30s
+    cache.set(cacheKey, response);
+    setTimeout(() => cache.delete(cacheKey), 30000);
+
+    return NextResponse.json(response);
   } catch (error) {
     console.error("Airtable fetch error:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
