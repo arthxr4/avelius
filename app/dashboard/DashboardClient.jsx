@@ -33,6 +33,7 @@ export default function DashboardClient() {
     const form = e.target;
     const url = form.adUrl.value;
     const quantity = Number(form.commentCount.value);
+    const language = form.language.value; 
 
     if (!url || !quantity || quantity <= 0) {
       alert("Please enter a valid URL and number of comments.");
@@ -52,10 +53,11 @@ export default function DashboardClient() {
     const res = await fetch("/api/orders/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: userEmail, adUrl: url, quantity }),
+      body: JSON.stringify({ email: userEmail, adUrl: url, quantity, language}),
     });
 
     const data = await res.json();
+    console.log("📦 API response:", data); // ← ajoute ça
     if (!data.success) {
       alert("An error occurred while submitting your request.");
       return;
@@ -65,7 +67,8 @@ export default function DashboardClient() {
       id: data.order.id,
       url,
       quantity,
-      status: "In progress",
+      language,
+      status: "To Do",
       date: new Date().toISOString(),
     };
 
@@ -131,6 +134,22 @@ export default function DashboardClient() {
             />
           </div>
 
+          <div>
+  <label htmlFor="language" className="block text-sm font-medium text-gray-700">
+    Language
+  </label>
+  <select
+  name="language"
+  id="language"
+  required
+  className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+>
+  <option value="French">French</option>
+  <option value="English">English</option>
+</select>
+</div>
+
+
           <button
             type="submit"
             className="bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 py-2 rounded-md"
@@ -150,7 +169,7 @@ export default function DashboardClient() {
             {[...orders]
               .sort((a, b) => new Date(b.date) - new Date(a.date))
               .map((r) => (
-                <li key={r.id} className="p-4 border rounded-md bg-white shadow-sm">
+                <li key={r.id || `${r.url}-${r.date}`} className="p-4 border rounded-md bg-white shadow-sm">
                   <p className="text-sm font-medium text-gray-700">📌 {r.url}</p>
                   <p className="text-sm text-gray-600">💬 {r.quantity || 0} comments</p>
                   <p className="text-sm text-gray-600">🗣️ Language: {r.language || '—'}</p>
