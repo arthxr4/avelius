@@ -1,11 +1,14 @@
 // middleware.js
 import { clerkMiddleware } from "@clerk/nextjs/server";
 
-export default clerkMiddleware();
+export default clerkMiddleware((auth, req) => {
+  console.log("🛡️ Middleware intercepting:", req.nextUrl.pathname);
+});
 
 export const config = {
   matcher: [
     "/dashboard(.*)",
-    "/api/checkout/secure", // ✅ protège la route sécurisée
+    "/api/checkout/secure",
+    "/api/stripe/(.*)",
   ],
 };

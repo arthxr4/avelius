@@ -94,30 +94,12 @@ export default function DashboardClient() {
           <button className="text-sm text-gray-500 hover:underline">Log out</button>
         </SignOutButton>
       </div>
-      <button
-  onClick={async () => {
-    const res = await fetch("/api/stripe/portal", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: userEmail }),
-    });
-
-    const data = await res.json();
-    if (data?.url) {
-      window.location.href = data.url;
-    } else {
-      alert("Stripe portal unavailable.");
-    }
-  }}
-  className="text-sm text-blue-600 hover:underline mt-4"
->
-  Manage my purchases on Stripe
-</button>
+      
 
       {/* Crédits restants */}
       <div className="mb-8 p-4 bg-gray-50 border rounded-lg shadow-sm">
         <p className="text-sm text-gray-500">Credits remaining</p>
-        <p className="text-3xl font-semibold text-orange-600">
+        <p className="text-3xl font-semibold text-[#1870EC]">
           {credits === null ? "..." : credits}
         </p>
       </div>
@@ -174,7 +156,7 @@ export default function DashboardClient() {
 
           <button
             type="submit"
-            className="bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 py-2 rounded-md"
+            className="bg-[#1870EC] hover:bg-[#0860DC] text-white font-medium px-4 py-2 rounded-md"
           >
             Submit request
           </button>
@@ -227,6 +209,26 @@ export default function DashboardClient() {
           
         )}
       </div>
+
+      <button
+  onClick={async () => {
+    const res = await fetch("/api/stripe/portal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: userEmail }),
+    });
+
+    const data = await res.json();
+    if (data?.url) {
+      window.location.href = data.url;
+    } else {
+      alert("Stripe portal unavailable.");
+    }
+  }}
+  className="text-sm text-blue-600 hover:underline mt-4"
+>
+  Manage my purchases on Stripe
+</button>
     </div>
   );
 }
