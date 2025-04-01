@@ -9,18 +9,18 @@ import { Check, Info } from "lucide-react";
 export default function GetSocialTrust() {
   const PRESET_PACKS = [
     { comments: 20, pricePerComment: 1.25 },
-    { comments: 50, pricePerComment: 1.0 },
-    { comments: 100, pricePerComment: 0.9 },
-    { comments: 200, pricePerComment: 0.8 },
-    { comments: 400, pricePerComment: 0.7 },
+    { comments: 50, pricePerComment: 1.1 },
+    { comments: 100, pricePerComment: 1.0 },
+    { comments: 200, pricePerComment: 0.9 },
+    { comments: 400, pricePerComment: 0.85 },
   ];
   
 
   const getRateByVolume = (count) => {
-    if (count >= 400) return 0.7;
-    if (count >= 200) return 0.8;
-    if (count >= 100) return 0.9;
-    if (count >= 50) return 1.0;
+    if (count >= 400) return 0.85;
+    if (count >= 200) return 0.9;
+    if (count >= 100) return 1;
+    if (count >= 50) return 1.1;
     if (count >= 20) return 1.25;
     return 1.25; // prix max si en-dessous de 20
   };
@@ -62,7 +62,7 @@ const total = subtotal - discount;
     // 👉 ouvrir une fenêtre temporaire *immédiatement* pour ne pas être bloqué
     const popup = window.open("", "_blank");
   
-    const res = await fetch("/api/checkout", {
+    const res = await fetch("/api/checkout/public", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
