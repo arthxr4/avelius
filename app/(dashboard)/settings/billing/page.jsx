@@ -1,38 +1,31 @@
-// app/settings/billing/page.jsx
 "use client";
 
-
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-
-
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+
 import BuyCredits from "./_components/BuyCredits";
 import SubscriptionDetails from "./_components/SubscriptionDetails";
-import OneTimePurchases from "./_components/AllPayments";
 import AllPayments from "./_components/AllPayments";
 
-export default function BillingPage() {
+function BillingContent() {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
-  const [subscriptionUrl, setSubscriptionUrl] = useState(null);
   const [credits, setCredits] = useState(null);
-
   const searchParams = useSearchParams();
   const showUpdatedNotice = searchParams.get("updated") === "1";
-  
+
   useEffect(() => {
     if (showUpdatedNotice) {
       setTimeout(() => {
         toast.success("Your subscription has been updated successfully.");
-      }, 1000); // léger délai pour que le DOM soit prêt
+      }, 1000);
     }
   }, [showUpdatedNotice]);
-  
 
-  // Fetch credits
   useEffect(() => {
     const fetchCredits = async () => {
       const res = await fetch("/api/credits", {
@@ -48,7 +41,6 @@ export default function BillingPage() {
     if (user) fetchCredits();
   }, [user]);
 
-  // Open Stripe customer portal
   const handlePortal = async () => {
     setLoading(true);
     const res = await fetch("/api/stripe/portal", { method: "POST" });
@@ -65,17 +57,22 @@ export default function BillingPage() {
 
   return (
     <div className="max-w-5xl mx-auto py-10 px-4">
-    
       <h1 className="text-2xl font-semibold mb-8">Plan & Billing</h1>
+
       <div className="mx-auto">
-      <SubscriptionDetails />
-      <AllPayments />
+        <SubscriptionDetails />
+        <AllPayments />
       </div>
-    
 
       <BuyCredits />
-
-    
     </div>
+  );
+}
+
+export default function BillingPage() {
+  return (
+    <Suspense fallback={null}>
+      <BillingContent />
+    </Suspense>
   );
 }
