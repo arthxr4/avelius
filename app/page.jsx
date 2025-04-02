@@ -8,21 +8,24 @@ import { Check, Info } from "lucide-react";
 
 export default function GetSocialTrust() {
   const PRESET_PACKS = [
-    { comments: 20, pricePerComment: 1.25 },
-    { comments: 50, pricePerComment: 1.1 },
-    { comments: 100, pricePerComment: 1.0 },
-    { comments: 200, pricePerComment: 0.9 },
-    { comments: 400, pricePerComment: 0.85 },
+    { comments: 20, pricePerComment: 1.99 },
+    { comments: 50, pricePerComment: 1.79 },
+    { comments: 100, pricePerComment: 1.59 },
+    { comments: 200, pricePerComment: 1.29 },
+    { comments: 400, pricePerComment: 0.89 },
   ];
   
-
   const getRateByVolume = (count) => {
-    if (count >= 400) return 0.85;
-    if (count >= 200) return 0.9;
-    if (count >= 100) return 1;
-    if (count >= 50) return 1.1;
-    if (count >= 20) return 1.25;
-    return 1.25; // prix max si en-dessous de 20
+    if (count >= 400) return 0.89;
+    if (count >= 350) return 0.99;
+    if (count >= 300) return 1.09;
+    if (count >= 250) return 1.19;
+    if (count >= 200) return 1.29;
+    if (count >= 150) return 1.49;
+    if (count >= 100) return 1.59;
+    if (count >= 50)  return 1.79;
+    if (count >= 20)  return 1.99;
+    return 1.99; // prix maximum si en-dessous de 20
   };
 
   const getBasePricePerComment = () => {
